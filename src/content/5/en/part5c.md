@@ -321,7 +321,7 @@ In our example, the mock function is a perfect choice since it can be easily use
 
 ### Tests for the <i>Togglable</i> component
 
-Let's write a few tests for the <i>Togglable</i> component. Let's add the <i>togglableContent</i> CSS classname to the div that returns the child components.
+Let's write a few tests for the <i>Togglable</i> component. Let's add the <i>togglableContent</i> data attribute to the div that returns the child components.
 
 ```js
 const Togglable = forwardRef((props, ref) => {
@@ -334,7 +334,7 @@ const Togglable = forwardRef((props, ref) => {
           {props.buttonLabel}
         </button>
       </div>
-      <div style={showWhenVisible} className="togglableContent"> // highlight-line
+      <div style={showWhenVisible} data-testid="togglableContent"> // highlight-line
         {props.children}
         <button onClick={toggleVisibility}>cancel</button>
       </div>
@@ -362,7 +362,7 @@ describe('<Togglable />', () => {
           togglable content
         </div>
       </Togglable>
-    ).container
+    )
   })
 
   test('renders its children', async () => {
@@ -370,8 +370,8 @@ describe('<Togglable />', () => {
   })
 
   test('at start the children are not displayed', () => {
-    const div = container.querySelector('.togglableContent')
-    expect(div).toHaveStyle('display: none')
+    const div = container.getByTestId('togglableContent')
+    expect(div).not.toBeVisible()
   })
 
   test('after clicking the button, children are displayed', async () => {
@@ -379,8 +379,8 @@ describe('<Togglable />', () => {
     const button = screen.getByText('show...')
     await user.click(button)
 
-    const div = container.querySelector('.togglableContent')
-    expect(div).not.toHaveStyle('display: none')
+    const div = container.getByTestId('togglableContent')
+    expect(div).toBeVisible()
   })
 })
 ```
@@ -412,8 +412,8 @@ describe('<Togglable />', () => {
     const closeButton = screen.getByText('cancel')
     await user.click(closeButton)
 
-    const div = container.querySelector('.togglableContent')
-    expect(div).toHaveStyle('display: none')
+    const div = container.getByTestId('togglableContent')
+    expect(div).not.toBeVisible()
   })
 })
 ```
